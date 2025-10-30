@@ -1,1 +1,22 @@
-"# Ignore OS/editor and sensitive files" 
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE / editor files
+.vscode/
+.idea/
+
+# Logs and temporary files
+*.log
+*.tmp
+*.cache
+
+# Uploaded/generated files
+uploads/
+documents/
+tmp/
+
+# Sensitive config
+dbconnection.php
+.env
+
