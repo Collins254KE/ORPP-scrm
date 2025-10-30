@@ -263,7 +263,7 @@ if (isset($_POST['send'])) {
     <!-- Buttons -->
     <div class="text-end mt-4">
         <button type="reset" class="btn btn-secondary me-2">Clear Form</button>
-        <button type="submit" name="send" class="btn btn-primary">Submit Feedback</button>
+        <button type="submit" name="send" class="btn btn-primary">Submit</button>
     </div>
 </form>
 

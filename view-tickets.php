@@ -22,9 +22,30 @@ $query = mysqli_query($con, "SELECT * FROM ticket WHERE email_id='$email' ORDER 
 body {
   background-color: #f4f6f9;
 }
+.page-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+}
 .page-title h3 {
   color: #003366;
   font-weight: 600;
+  margin-bottom: 10px;
+}
+.export-btn {
+  background-color: #003366;
+  color: #fff;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 16px;
+  text-decoration: none;
+  transition: background-color 0.2s ease-in-out;
+}
+.export-btn:hover {
+  background-color: #00509e;
+  color: #fff;
 }
 .ticket-card {
   border: 1px solid #ddd;
@@ -83,6 +104,14 @@ body {
 
       <div class="page-title">
         <h3>My Created Tickets</h3>
+        <?php if (mysqli_num_rows($query) > 0): ?>
+        <a href="export-my-tickets.php" target="_blank" class="export-btn">
+  <i class="bi bi-file-earmark-excel"></i> Export to Excel
+</a>
+
+
+
+        <?php endif; ?>
       </div>
 
       <?php if (mysqli_num_rows($query) > 0): ?>
@@ -114,7 +143,6 @@ body {
                 <div class="col-md-6"><strong>Time Out:</strong> <?php echo htmlspecialchars($row['time_out']); ?></div>
               </div>
 
-              <!-- Ratings -->
               <div class="row">
                 <div class="col-md-6"><strong>Adequacy of Information:</strong> <?php echo htmlspecialchars($row['info_rating']); ?></div>
                 <div class="col-md-6"><strong>Ease of Process:</strong> <?php echo htmlspecialchars($row['process_rating']); ?></div>
@@ -129,7 +157,6 @@ body {
               </div>
             </div>
 
-            <!-- Admin Remarks -->
             <?php if (!empty($row['admin_remark'])): ?>
               <hr>
               <div>
@@ -138,7 +165,6 @@ body {
               </div>
             <?php endif; ?>
 
-            <!-- Consent Information -->
             <?php if (!empty($row['consent'])): ?>
               <hr>
               <div>
