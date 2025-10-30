@@ -2,28 +2,28 @@
 session_start();
 include("dbconnection.php");
 
-// ✅ Check if session is active
+//  Check if session is active
 if (!isset($_SESSION['login']) || empty($_SESSION['login'])) {
     die("Your session has expired. Please log in again.");
 }
 
 $email = $_SESSION['login'];
 
-// ✅ Fetch user tickets
+//  Fetch user tickets
 $query = mysqli_query($con, "SELECT * FROM ticket WHERE email_id='" . mysqli_real_escape_string($con, $email) . "' ORDER BY posting_date DESC");
 
-// ✅ If no data found
+//  If no data found
 if (mysqli_num_rows($query) == 0) {
     die("No tickets found for export.");
 }
 
-// ✅ Set headers for Excel export
+//  Set headers for Excel export
 header("Content-Type: application/vnd.ms-excel; charset=utf-8");
 header("Content-Disposition: attachment; filename=my_tickets_" . date("Y-m-d_H-i-s") . ".xls");
 header("Pragma: no-cache");
 header("Expires: 0");
 
-// ✅ Start the table
+//  Start the table
 echo "<table border='1'>";
 echo "<thead>
 <tr>
@@ -52,7 +52,7 @@ echo "<thead>
 </thead>
 <tbody>";
 
-// ✅ Loop through and output each record
+//  Loop through and output each record
 while ($row = mysqli_fetch_assoc($query)) {
     echo "<tr>";
     echo "<td>" . htmlspecialchars($row['ticket_id']) . "</td>";
