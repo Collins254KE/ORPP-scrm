@@ -2,14 +2,17 @@
     RewriteEngine On
     RewriteBase /
 
-    # Redirect Trailing Slashes...
+    # Redirect Trailing Slashes (except for directories)
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteRule ^(.*)/$ /$1 [L,R=301]
 
-    # Send Requests To Front Controller...
+    # Send Requests To Front Controller (Laravel index.php)
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^ index.php [L]
+
+    # Prevent access to hidden files (starting with .)
+    RewriteRule (^|/)\. - [F]
 </IfModule>
 
 # Security headers
@@ -17,7 +20,14 @@
     Header set X-Content-Type-Options "nosniff"
     Header set X-Frame-Options "SAMEORIGIN"
     Header set X-XSS-Protection "1; mode=block"
+    Header always set Referrer-Policy "no-referrer-when-downgrade"
+    Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains" env=HTTPS
 </IfModule>
 
 # Disable directory listing
 Options -Indexes
+
+# Deny access to sensitive files
+<FilesMatch "\.(env|json|lock|phar)$">
+    Require all denied
+</FilesMatch>
