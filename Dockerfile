@@ -1,7 +1,3 @@
-# -------------------------------------------------------
-# Laravel 10 / ORPP Deployment on Render with PHP 8.2 + Apache
-# -------------------------------------------------------
-
 # 1️⃣ Use official PHP 8.2 image with Apache
 FROM php:8.2-apache
 
@@ -20,19 +16,15 @@ COPY . /var/www/html
 # 5️⃣ Set working directory
 WORKDIR /var/www/html
 
-# 6️⃣ Ensure Laravel directories exist & set permissions
-RUN mkdir -p storage/framework/cache storage/framework/sessions storage/framework/views bootstrap/cache \
-    && chown -R www-data:www-data /var/www/html \
-    && chmod -R 755 storage bootstrap/cache
+# 6️⃣ Set proper permissions
+RUN chown -R www-data:www-data /var/www/html \
+    && chmod -R 755 /var/www/html
 
-# 7️⃣ Configure Apache to use Laravel public folder
-RUN sed -i 's|DocumentRoot /var/www/html|DocumentRoot /var/www/html/public|' /etc/apache2/sites-available/000-default.conf
-
-# 8️⃣ Enable .htaccess overrides
+# 7️⃣ Ensure .htaccess overrides are enabled
 RUN sed -i '/<Directory \/var\/www\/>/,/<\/Directory>/ s/AllowOverride None/AllowOverride All/' /etc/apache2/apache2.conf
 
-# 9️⃣ Expose port 80
+# 8️⃣ Expose port 80
 EXPOSE 80
 
-# 1️⃣0️⃣ Start Apache in foreground
+# 9️⃣ Start Apache in foreground
 CMD ["apache2-foreground"]

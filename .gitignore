@@ -1,34 +1,19 @@
 # Node modules
 /node_modules/
 
-# Laravel storage and caches
-/public/storage
-/storage/*.key
-/storage/framework/cache/*
-/storage/framework/sessions/*
-/storage/framework/views/*
-/storage/logs/*
-
-# Composer vendor directory
-/vendor/
+# Vendor libraries (if you use Composer)
+vendor/
 
 # Environment files
 .env
 .env.*
 
-# PHPUnit cache
-.phpunit.result.cache
-
-# Homestead
-Homestead.yaml
-Homestead.json
-
 # IDE & OS files
 /.idea/
-/.vscode/
-/.DS_Store
+.vscode/
+.DS_Store
 Thumbs.db
 
-# Optional: Laravel debugbar / Telescope (if used)
-/storage/debugbar/*
-/storage/telescope/*
+# Logs or temporary files
+*.log
+/tmp/
