@@ -2,9 +2,14 @@
     RewriteEngine On
     RewriteBase /
 
-    # Redirect trailing slashes except directories
+    # Redirect trailing slashes except for directories
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteRule ^(.*)/$ /$1 [L,R=301]
+
+    # Serve index.php for requests to root or non-existing PHP files
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^ index.php [L]
 
     # Prevent access to hidden files (starting with .)
     RewriteRule (^|/)\. - [F]
