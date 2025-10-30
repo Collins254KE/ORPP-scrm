@@ -74,7 +74,6 @@ body {
 <div class="page-container row">
   <?php include("leftbar.php"); ?>
 
-
   <div class="page-content">
     <div class="content">
       <ul class="breadcrumb">

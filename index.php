@@ -12,9 +12,13 @@
   <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Catamaran:wght@400;700;900&display=swap" rel="stylesheet">
 
   <style>
-    body {
+    html, body {
+      height: 100%;
+      margin: 0;
       font-family: 'Lato', sans-serif;
       background-color: #f4f6f9;
+      display: flex;
+      flex-direction: column;
     }
 
     /* Navbar */
@@ -41,6 +45,7 @@
       color: white;
       padding: 120px 0;
       position: relative;
+      flex: 1 0 auto; /* makes header take remaining height */
     }
 
     header .masthead-content {
@@ -87,6 +92,8 @@
       background-color: #002147;
       color: #fff;
       padding: 20px 0;
+      text-align: center;
+      flex-shrink: 0; /* keeps footer at the bottom */
     }
 
     footer p {
@@ -128,7 +135,7 @@
   </header>
 
   <!-- Footer -->
-  <footer class="text-center">
+  <footer>
     <div class="container">
       <p>© 2025 Office of the Registrar of Political Parties (ORPP) — Customer Service Desk | <?= date("Y-m-d") ?></p>
     </div>
