@@ -1,0 +1,22 @@
+# Laravel standard .gitignore
+
+/node_modules
+/public/storage
+/storage/*.key
+/vendor
+.env
+.env.*
+.phpunit.result.cache
+Homestead.yaml
+Homestead.json
+/.idea
+/.vscode
+/.DS_Store
+Thumbs.db
+
+# Laravel specific caches
+/bootstrap/cache/*.php
+/storage/framework/cache/*
+/storage/framework/sessions/*
+/storage/framework/views/*
+/storage/logs/*
