@@ -1,0 +1,17 @@
+.navbar-custom, footer {
+    background-color: #6EC1E4 !important;
+}
+header.masthead {
+    
+    background-position: center center;
+    background-size: cover;
+}
+.btn-primary {
+    background-color:#6EC1E4;
+    border-color: #6EC1E4;
+}
+.btn-primary:hover, .btn-primary:active, .btn-primary:focus, .btn-primary:focus-within {
+    background-color: #6EC1E4 !important;
+    border-color: #2c7777 !important;
+}
+
