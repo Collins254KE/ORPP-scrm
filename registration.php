@@ -134,7 +134,7 @@ function checkpass() {
 
       <form name="signup" method="post" onsubmit="return checkpass();">
         <div class="form-group mb-3">
-          <label>Name</label>
+          <label>Full Name</label>
           <input type="text" class="form-control" name="name" required>
         </div>
 
@@ -143,15 +143,26 @@ function checkpass() {
           <input type="email" class="form-control" name="email" required>
         </div>
 
-        <div class="form-group mb-3">
-          <label>Password</label>
-          <input type="password" class="form-control" name="password" required>
-        </div>
+       <div class="form-group mb-3">
+  <label>Password</label>
+  <div class="input-group">
+    <input type="password" class="form-control" name="password" id="password" required>
+    <span class="input-group-text" style="cursor:pointer;" onclick="togglePassword('password', this)">
+      <i class="fa fa-eye" id="password-eye"></i>
+    </span>
+  </div>
+</div>
 
-        <div class="form-group mb-3">
-          <label>Confirm Password</label>
-          <input type="password" class="form-control" name="cpassword" required>
-        </div>
+<!-- Confirm Password Field -->
+<div class="form-group mb-3">
+  <label>Confirm Password</label>
+  <div class="input-group">
+    <input type="password" class="form-control" name="cpassword" id="cpassword" required>
+    <span class="input-group-text" style="cursor:pointer;" onclick="togglePassword('cpassword', this)">
+      <i class="fa fa-eye" id="cpassword-eye"></i>
+    </span>
+  </div>
+</div>
 
         <div class="form-group mb-3">
           <label>Phone Number</label>
@@ -178,5 +189,32 @@ function checkpass() {
   <footer>
     <p>© <?= date('Y') ?> Office of the Registrar of Political Parties | All Rights Reserved</p>
   </footer>
+ <script>
+// Toggle password visibility and change eye icon
+function togglePassword(fieldId, iconSpan) {
+  const input = document.getElementById(fieldId);
+  const icon = iconSpan.querySelector("i");
+
+  if (input.type === "password") {
+    input.type = "text";
+    icon.classList.remove("fa-eye");
+    icon.classList.add("fa-eye-slash");
+  } else {
+    input.type = "password";
+    icon.classList.remove("fa-eye-slash");
+    icon.classList.add("fa-eye");
+  }
+}
+
+// Validate passwords match
+function checkpass() {
+  if (document.signup.password.value !== document.signup.cpassword.value) {
+    alert('Passwords do not match!');
+    document.signup.cpassword.focus();
+    return false;
+  }
+  return true;
+}
+</script>
 </body>
 </html>

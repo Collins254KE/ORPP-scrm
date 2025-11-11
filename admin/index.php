@@ -47,7 +47,7 @@ exit();
 <div class="container">
   <div class="login-container">  
         <div class="col-md-5">
-          <h2 class="text-center text-white"><strong>CSM - Admin Login Page</strong></h2>
+          <h2 class="text-center text-white"><strong>ORPP CSS - Admin Login Page</strong></h2>
           <hr>
         </div>
         <div class="col-md-5 "> 
@@ -62,7 +62,7 @@ exit();
           <input type="password" class="form-control rounded-0" id="password" name="password" required="required">
          </div>
         <div class="form-group text-center">
-          <a href="./../">Back to Portal</a>
+          <a href="./../">Back to Home Page</a>
           <button class="btn btn-primary btn-cons pull-right" name="login" type="submit">Login</button>
         </div>
 		  </form>

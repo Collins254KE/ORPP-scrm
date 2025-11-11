@@ -4,9 +4,21 @@ include("dbconnection.php");
 include("checklogin.php");
 check_login();
 
-// Fetch user tickets
+// Handle search/filter
+$search_term = '';
+if (isset($_GET['search'])) {
+    $search_term = trim($_GET['search']);
+}
+
+// Fetch user tickets with optional search
 $email = $_SESSION['login'];
-$query = mysqli_query($con, "SELECT * FROM ticket WHERE email_id='$email' ORDER BY posting_date DESC");
+$filter_sql = "WHERE email_id='$email'";
+if (!empty($search_term)) {
+    $search_sql = mysqli_real_escape_string($con, $search_term);
+    $filter_sql .= " AND (ticket_id LIKE '%$search_sql%' OR name LIKE '%$search_sql%' OR region LIKE '%$search_sql%')";
+}
+
+$query = mysqli_query($con, "SELECT * FROM ticket $filter_sql ORDER BY posting_date DESC");
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -14,70 +26,19 @@ $query = mysqli_query($con, "SELECT * FROM ticket WHERE email_id='$email' ORDER 
 <meta charset="utf-8">
 <title>User | My Tickets</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <link href="assets/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 <link href="assets/css/style.css" rel="stylesheet">
 
 <style>
-body {
-  background-color: #f4f6f9;
-}
-.page-title h3 {
-  color: #003366;
-  font-weight: 600;
-}
-.export-btn {
-  float: right;
-  background-color: #003366;
-  color: #fff;
-  font-weight: 600;
-  border: none;
-  border-radius: 8px;
-  padding: 8px 16px;
-  text-decoration: none;
-  transition: background-color 0.2s ease-in-out;
-}
-.export-btn:hover {
-  background-color: #00509e;
-  color: #fff;
-}
-.ticket-card {
-  border: 1px solid #ddd;
-  border-radius: 10px;
-  padding: 20px 25px;
-  margin-bottom: 25px;
-  background: #fff;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-  transition: all 0.2s ease-in-out;
-}
-.ticket-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-}
-.ticket-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-.ticket-header h4 {
-  font-weight: 600;
-  margin: 0;
-  color: #003366;
-}
-.label-status {
-  padding: 5px 10px;
-  border-radius: 6px;
-  font-size: 12px;
-  font-weight: 600;
-  color: #fff;
-  text-transform: capitalize;
-}
+body { background-color: #f4f6f9; }
+.page-title h3 { color: #003366; font-weight: 600; }
+.export-btn { float: right; background-color: #003366; color: #fff; font-weight: 600; border: none; border-radius: 8px; padding: 8px 16px; text-decoration: none; transition: background-color 0.2s; }
+.export-btn:hover { background-color: #00509e; color: #fff; }
+.table th, .table td { vertical-align: middle; }
+.label-status { padding: 5px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; color: #fff; text-transform: capitalize; }
 .label-status.open { background-color: #28a745; }
 .label-status.closed { background-color: #dc3545; }
 .label-status.pending { background-color: #ffc107; color: #000; }
-.text-muted {
-  color: #6c757d !important;
-}
 </style>
 </head>
 
@@ -96,83 +57,87 @@ body {
       <div class="page-title d-flex justify-content-between align-items-center">
         <h3>My Created Tickets</h3>
         <?php if (mysqli_num_rows($query) > 0): ?>
-          <a href="export_my_tickets.php" class="export-btn">
-            <i class="bi bi-file-earmark-excel"></i> Export to Excel
-          </a>
+            <a href="export_my_tickets.php<?php echo !empty($search_term) ? '?search='.urlencode($search_term) : ''; ?>" class="export-btn">
+                <i class="bi bi-file-earmark-excel"></i> Export to Excel
+            </a>
         <?php endif; ?>
       </div>
 
-      <div class="mt-4">
-        <?php if (mysqli_num_rows($query) > 0): ?>
-          <?php while ($row = mysqli_fetch_assoc($query)): ?>
-            <div class="ticket-card">
-              <div class="ticket-header">
-                <h4>Ticket #<?php echo htmlspecialchars($row['ticket_id']); ?></h4>
-                <span class="label-status <?php echo strtolower($row['status']); ?>">
-                  <?php echo ucfirst(htmlspecialchars($row['status'])); ?>
-                </span>
-              </div>
-              <small class="text-muted">Created on <?php echo htmlspecialchars($row['posting_date']); ?></small>
+      <!-- Search Form -->
+      <form class="row g-3 my-3" method="get" action="">
+        <div class="col-md-4">
+            <input type="text" name="search" class="form-control" placeholder="Search by ID, Name or Region" value="<?php echo htmlspecialchars($search_term); ?>">
+        </div>
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-primary w-100">Search</button>
+        </div>
+      </form>
 
-              <div class="ticket-info mt-3">
-                <div class="row">
-                  <div class="col-md-6"><strong>Full Name:</strong> <?php echo htmlspecialchars($row['name']); ?></div>
-                  <div class="col-md-6"><strong>ID No:</strong> <?php echo htmlspecialchars($row['id_no']); ?></div>
-                </div>
-                <div class="row">
-                  <div class="col-md-6"><strong>Phone Number:</strong> <?php echo htmlspecialchars($row['phone_number']); ?></div>
-                  <div class="col-md-6"><strong>Date:</strong> <?php echo htmlspecialchars($row['visit_date']); ?></div>
-                </div>
-                <div class="row">
-                  <div class="col-md-6"><strong>Reason for Visit:</strong> <?php echo htmlspecialchars($row['reason_for_visit']); ?></div>
-                  <div class="col-md-6"><strong>Time In:</strong> <?php echo htmlspecialchars($row['time_in']); ?></div>
-                </div>
-                <div class="row">
-                  <div class="col-md-6"><strong>Region:</strong> <?php echo htmlspecialchars($row['region']); ?></div>
-                  <div class="col-md-6"><strong>Time Out:</strong> <?php echo htmlspecialchars($row['time_out']); ?></div>
-                </div>
-
-                <div class="row">
-                  <div class="col-md-6"><strong>Adequacy of Information:</strong> <?php echo htmlspecialchars($row['info_rating']); ?></div>
-                  <div class="col-md-6"><strong>Ease of Process:</strong> <?php echo htmlspecialchars($row['process_rating']); ?></div>
-                </div>
-                <div class="row">
-                  <div class="col-md-6"><strong>Speed of Service:</strong> <?php echo htmlspecialchars($row['speed_rating']); ?></div>
-                  <div class="col-md-6"><strong>Serving Officer Remarks:</strong> <?php echo htmlspecialchars($row['officer_remarks']); ?></div>
-                </div>
-
-                <div class="row">
-                  <div class="col-md-12"><strong>Customer Comments:</strong> <?php echo htmlspecialchars($row['customer_comments']); ?></div>
-                </div>
-              </div>
-
-              <?php if (!empty($row['admin_remark'])): ?>
-                <hr>
-                <div>
-                  <strong>Admin Response:</strong> <?php echo htmlspecialchars($row['admin_remark']); ?><br>
-                  <small class="text-muted">Posted on <?php echo htmlspecialchars($row['admin_remark_date']); ?></small>
-                </div>
-              <?php endif; ?>
-
-              <?php if (!empty($row['consent'])): ?>
-                <hr>
-                <div>
-                  <strong>Consent:</strong> <?php echo htmlspecialchars($row['consent']); ?><br>
-                  <?php if ($row['consent'] === 'Accept'): ?>
-                    <strong>Signature:</strong> <?php echo htmlspecialchars($row['signature']); ?><br>
-                    <strong>Date:</strong> <?php echo htmlspecialchars($row['consent_date']); ?>
-                  <?php endif; ?>
-                </div>
-              <?php endif; ?>
-            </div>
-          <?php endwhile; ?>
-        <?php else: ?>
-          <div class="alert alert-warning text-center mt-5" role="alert">
-            <h5 class="mb-0">No tickets found.</h5>
-            <p class="mb-0 text-muted">You haven’t created any service tickets yet.</p>
-          </div>
-        <?php endif; ?>
-      </div>
+      <?php if (mysqli_num_rows($query) > 0): ?>
+        <div class="table-responsive">
+          <table class="table table-bordered table-striped">
+            <thead class="table-primary">
+              <tr>
+                <th>Ticket ID</th>
+                <th>Status</th>
+                <th>Full Name</th>
+                <th>ID No</th>
+                <th>Phone Number</th>
+                <th>Reason</th>
+                <th>Region</th>
+                <th>Visit Date</th>
+                <th>Time In</th>
+                <th>Time Out</th>
+                <th>Info Rating</th>
+                <th>Process Rating</th>
+                <th>Speed Rating</th>
+                <th>Officer Remarks</th>
+                <th>Customer Comments</th>
+                <th>Admin Remark</th>
+                <th>Consent</th>
+              </tr>
+            </thead>
+            <tbody>
+            <?php while ($row = mysqli_fetch_assoc($query)): 
+                // Mask ID & Phone
+                $id_no = strlen($row['id_no']) > 4 ? substr($row['id_no'],0,2)."****".substr($row['id_no'],-2) : $row['id_no'];
+                $phone = strlen($row['phone_number']) > 4 ? substr($row['phone_number'],0,2)."****".substr($row['phone_number'],-2) : $row['phone_number'];
+            ?>
+              <tr>
+                <td><?php echo htmlspecialchars($row['ticket_id']); ?></td>
+                <td><span class="label-status <?php echo strtolower($row['status']); ?>"><?php echo ucfirst(htmlspecialchars($row['status'])); ?></span></td>
+                <td><?php echo htmlspecialchars($row['name']); ?></td>
+                <td><?php echo $id_no; ?></td>
+                <td><?php echo $phone; ?></td>
+                <td><?php echo htmlspecialchars($row['reason_for_visit']); ?></td>
+                <td><?php echo htmlspecialchars($row['region']); ?></td>
+                <td><?php echo htmlspecialchars($row['visit_date']); ?></td>
+                <td><?php echo htmlspecialchars($row['time_in']); ?></td>
+                <td><?php echo htmlspecialchars($row['time_out']); ?></td>
+                <td><?php echo htmlspecialchars($row['info_rating']); ?></td>
+                <td><?php echo htmlspecialchars($row['process_rating']); ?></td>
+                <td><?php echo htmlspecialchars($row['speed_rating']); ?></td>
+                <td><?php echo htmlspecialchars($row['officer_remarks']); ?></td>
+                <td><?php echo htmlspecialchars($row['customer_comments']); ?></td>
+                <td><?php echo htmlspecialchars($row['admin_remark']); ?></td>
+                <td>
+                    <?php echo htmlspecialchars($row['consent']); ?>
+                    <?php if($row['consent'] === 'Accept'): ?>
+                        <br><strong>Signature:</strong> <?php echo htmlspecialchars($row['signature']); ?>
+                        <br><strong>Date:</strong> <?php echo htmlspecialchars($row['consent_date']); ?>
+                    <?php endif; ?>
+                </td>
+              </tr>
+            <?php endwhile; ?>
+            </tbody>
+          </table>
+        </div>
+      <?php else: ?>
+        <div class="alert alert-warning text-center mt-5">
+          <h5 class="mb-0">No tickets found.</h5>
+          <p class="mb-0 text-muted">You haven’t created any service tickets yet.</p>
+        </div>
+      <?php endif; ?>
     </div>
   </div>
 </div>

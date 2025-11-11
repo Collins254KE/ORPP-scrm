@@ -22,4 +22,6 @@
       <li><a href="user-access-log.php"><span class="fa fa-users"></span>&nbsp;&nbsp;User Access Log</a></li>
       <li><a href="manage-users.php"><span class="fa fa-users"></span> Users</a></li>
       <li><a href="change-password.php"><span class="fa fa-file-text-o"></span> Change Password</a></li>
+      <li><a href="logout.php"><span class="fa fa-sign-out"></span> Logout</a></li>
+
     </ul>

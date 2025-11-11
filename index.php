@@ -48,11 +48,11 @@
         }
 
         .orpp-logo-section h2 {
-            font-family: 'Catamaran', sans-serif;
-            font-weight: 800;
-            color: #003366;
-            margin-bottom: 0;
-        }
+    font-family: Arial, Helvetica, sans-serif !important;
+    font-weight: 800;
+    color: #003366;
+    margin-bottom: 0;
+}
 
         .orpp-logo-section p {
             font-size: 1.1rem;
@@ -116,6 +116,7 @@
             font-size: 14px;
         }
     </style>
+    
 </head>
 <body>
 
@@ -149,7 +150,7 @@
 <header class="masthead text-center">
     <div class="masthead-content">
         <div class="container">
-            <marquee behavior="alternate" direction="left" scrollamount="6"
+            <marquee behavior="alternate" direction="left" scrollamount="7"
                      style="font-size: 1.8rem; font-weight: 700; color: #003366;">
                 Welcome to the ORPP Customer Service System
             </marquee>
