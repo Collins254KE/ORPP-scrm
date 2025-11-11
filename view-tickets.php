@@ -113,58 +113,38 @@ body { background-color: #f4f6f9; font-family: 'Segoe UI', sans-serif; }
               <th>Time In</th>
               <th>Time Out</th>
               <th>Ratings</th>
-              <th>Officer Remarks</th>
-              <th>Customer Comments</th>
-              <th>Admin Remarks</th>
-              <th>Consent</th>
+              <th>Action</th>
             </tr>
           </thead>
-          <tbody>
-            <?php while ($row = mysqli_fetch_assoc($query)): ?>
-            <tr>
-              <td><?php echo htmlspecialchars($row['ticket_id']); ?></td>
-              <td class="text-center">
-                <span class="label-status <?php echo strtolower($row['status']); ?>">
-                  <?php echo ucfirst(htmlspecialchars($row['status'])); ?>
-                </span>
-              </td>
-              <td><?php echo htmlspecialchars($row['name']); ?></td>
-              <td><?php echo maskID($row['id_no']); ?></td>
-              <td><?php echo maskPhone($row['phone_number']); ?></td>
-              <td><?php echo htmlspecialchars($row['reason_for_visit']); ?></td>
-              <td><?php echo htmlspecialchars($row['region']); ?></td>
-              <td><?php echo htmlspecialchars($row['visit_date']); ?></td>
-              <td><?php echo htmlspecialchars($row['time_in']); ?></td>
-              <td><?php echo htmlspecialchars($row['time_out']); ?></td>
-              <td>
-                Info: <?php echo htmlspecialchars($row['info_rating']); ?><br>
-                Process: <?php echo htmlspecialchars($row['process_rating']); ?><br>
-                Speed: <?php echo htmlspecialchars($row['speed_rating']); ?>
-              </td>
-              <td><?php echo htmlspecialchars($row['officer_remarks']); ?></td>
-              <td><?php echo htmlspecialchars($row['customer_comments']); ?></td>
-              <td>
-                <?php if (!empty($row['admin_remark'])): ?>
-                  <strong><?php echo htmlspecialchars($row['admin_remark']); ?></strong><br>
-                  <small class="text-muted"><?php echo htmlspecialchars($row['admin_remark_date']); ?></small>
-                <?php else: ?>
-                  <em>No remarks</em>
-                <?php endif; ?>
-              </td>
-              <td>
-                <?php if (!empty($row['consent'])): ?>
-                  <?php echo htmlspecialchars($row['consent']); ?>
-                  <?php if ($row['consent'] === 'Accept'): ?>
-                    <br><small>Signed: <?php echo htmlspecialchars($row['signature']); ?><br>
-                    Date: <?php echo htmlspecialchars($row['consent_date']); ?></small>
-                  <?php endif; ?>
-                <?php else: ?>
-                  <em>Not given</em>
-                <?php endif; ?>
-              </td>
-            </tr>
-            <?php endwhile; ?>
-          </tbody>
+<tbody>
+<?php while ($row = mysqli_fetch_assoc($query)): ?>
+<tr>
+  <td><?php echo htmlspecialchars($row['ticket_id']); ?></td>
+  <td class="text-center">
+    <span class="label-status <?php echo strtolower($row['status']); ?>">
+      <?php echo ucfirst(htmlspecialchars($row['status'])); ?>
+    </span>
+  </td>
+  <td><?php echo htmlspecialchars($row['name']); ?></td>
+  <td><?php echo maskID($row['id_no']); ?></td>
+  <td><?php echo maskPhone($row['phone_number']); ?></td>
+  <td><?php echo htmlspecialchars($row['reason_for_visit']); ?></td>
+  <td><?php echo htmlspecialchars($row['region']); ?></td>
+  <td><?php echo htmlspecialchars($row['visit_date']); ?></td>
+  <td><?php echo htmlspecialchars($row['time_in']); ?></td>
+  <td><?php echo htmlspecialchars($row['time_out']); ?></td>
+  <td>
+    Info: <?php echo htmlspecialchars($row['info_rating']); ?><br>
+    Process: <?php echo htmlspecialchars($row['process_rating']); ?><br>
+    Speed: <?php echo htmlspecialchars($row['speed_rating']); ?>
+  </td>
+  <!-- Action column -->
+  <td>
+    <a href="view-ticket.php?ticket_id=<?php echo urlencode($row['ticket_id']); ?>" class="btn btn-sm btn-primary mb-1">View/Edit</a>
+  </td>
+</tr>
+<?php endwhile; ?>
+</tbody>
         </table>
       </div>
 

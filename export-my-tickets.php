@@ -159,15 +159,24 @@ meaningfully utilizing feedback received to improve service delivery.</p>
 <table>
 <thead>
 <tr>
-<th>S/No</th><th>Date</th><th>Name</th><th>ID No</th><th>Contact</th><th>Reason</th><th>Status</th>
+<th>S/No</th><th>Ticket No</th><th>Date</th><th>Name</th><th>ID No</th><th>Contact</th><th>Reason</th><th>Status</th>
 </tr>
 </thead>
 <tbody>';
 
+$sn = 1; // Initialize serial number
+
 foreach ($tickets as $row) {
-    $maskedID = strlen($row['id_no']) > 4 ? substr($row['id_no'],0,2).'****'.substr($row['id_no'],-2) : $row['id_no'];
-    $maskedPhone = strlen($row['phone_number']) > 4 ? substr($row['phone_number'],0,2).'XXXX'.substr($row['phone_number'],-2) : $row['phone_number'];
+    $maskedID = strlen($row['id_no']) > 4 
+        ? substr($row['id_no'], 0, 2) . '****' . substr($row['id_no'], -2) 
+        : $row['id_no'];
+        
+    $maskedPhone = strlen($row['phone_number']) > 4 
+        ? substr($row['phone_number'], 0, 2) . 'XXXX' . substr($row['phone_number'], -2) 
+        : $row['phone_number'];
+
     $report .= "<tr>
+        <td>" . $sn++ . "</td> <!-- Auto increment S/No -->
         <td>{$row['ticket_id']}</td>
         <td>{$row['visit_date']}</td>
         <td>{$row['name']}</td>
@@ -177,7 +186,6 @@ foreach ($tickets as $row) {
         <td>{$row['status']}</td>
     </tr>";
 }
-
 $report .= '</tbody></table>
 
 <h2>3.0 SUMMARY OF CUSTOMERS ATTENDED</h2>
@@ -211,9 +219,20 @@ if ($format == 'word') {
 }
 
 if ($format == 'pdf') {
-    header("Content-Type: application/pdf");
-    header("Content-Disposition: attachment; filename=customer_service_report_" . date("Y-m-d_H-i-s") . ".pdf");
-    echo $report;
+    require_once __DIR__ . '/vendor/autoload.php'; // load mPDF
+
+    $mpdf = new \Mpdf\Mpdf([
+        'margin_left' => 15,
+        'margin_right' => 15,
+        'margin_top' => 20,
+        'margin_bottom' => 20,
+    ]);
+
+    $mpdf->SetTitle('Customer Service Report');
+    $mpdf->WriteHTML($report); // convert HTML to PDF
+    $mpdf->Output('customer_service_report_' . date("Y-m-d_H-i-s") . '.pdf', 'D'); // 'D' = download
     exit;
 }
+
+
 ?>

@@ -2,8 +2,7 @@
 session_start();
 include("checklogin.php");
 check_login();
-include("dbconnection.php"); // use PostgreSQL connection
-
+include("dbconnection.php");
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -27,15 +26,59 @@ body {
   font-family: 'Segoe UI', sans-serif;
   color: #003366;
 }
-.navbar, .header { background-color: #003366 !important; border-bottom: 4px solid #FDB913; }
-.navbar-brand, .navbar-nav > li > a { color: #ffffff !important; font-weight: 600; }
-.page-title h3 { color: #003366; font-weight: 700; border-left: 5px solid #FDB913; padding-left: 10px; }
-.tiles.blue { background: #003366 !important; border-radius: 12px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
-.tiles .heading a { color: #FDB913 !important; font-size: 18px; font-weight: 600; text-decoration: none; }
-.tiles-body h3 { color: #ffffff; font-size: 36px; font-weight: 700; }
-.footer { background-color: #003366; color: #ffffff; padding: 15px 0; text-align: center; border-top: 3px solid #FDB913; margin-top: 30px; }
-.animate-number { color: #FDB913; }
-a:hover { color: #FDB913; }
+
+.navbar, .header {
+  background-color: #003366 !important;
+  border-bottom: 4px solid #FDB913;
+}
+
+.navbar-brand, .navbar-nav > li > a {
+  color: #ffffff !important;
+  font-weight: 600;
+}
+
+.page-title h3 {
+  color: #003366;
+  font-weight: 700;
+  border-left: 5px solid #FDB913;
+  padding-left: 10px;
+}
+
+.tiles.blue {
+  background: #003366 !important;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.tiles .heading a {
+  color: #FDB913 !important;
+  font-size: 18px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.tiles-body h3 {
+  color: #ffffff;
+  font-size: 36px;
+  font-weight: 700;
+}
+
+.footer {
+  background-color: #003366;
+  color: #ffffff;
+  padding: 15px 0;
+  text-align: center;
+  border-top: 3px solid #FDB913;
+  margin-top: 30px;
+}
+
+.animate-number {
+  color: #FDB913;
+}
+
+a:hover {
+  color: #FDB913;
+}
 </style>
 </head>
 
@@ -56,16 +99,13 @@ a:hover { color: #FDB913; }
           <div class="tiles blue added-margin">
             <div class="tiles-body">
               <?php 
-              // PostgreSQL query
-              $ret = pg_query($con, "SELECT * FROM ticket WHERE email_id='" . $_SESSION['login'] . "'");
-              $num = pg_num_rows($ret);
+              $ret=mysqli_query($con,"select * from ticket where email_id='".$_SESSION['login']."'");
+              $num=mysqli_num_rows($ret);
               ?>
               <div class="heading">
                 <a href="view-tickets.php">Total Tickets</a>
               </div>
-              <h3 class="text-right">
-                <span class="animate-number" data-value="<?php echo $num;?>" data-animation-duration="1200"><?= $num ?></span>
-              </h3>
+              <h3 class="text-right"><span class="animate-number" data-value="<?php echo $num;?>" data-animation-duration="1200"><?= $num ?></span></h3>
             </div>
           </div>
         </div>
@@ -73,7 +113,7 @@ a:hover { color: #FDB913; }
     </div>
 
     <footer class="footer">
-      &copy; <?= date('Y'); ?> Office of the Registrar of Political Parties (ORPP). All Rights Reserved.
+      &copy; <?php echo date('Y'); ?> Office of the Registrar of Political Parties (ORPP). All Rights Reserved.
     </footer>
   </div>
 </div>
