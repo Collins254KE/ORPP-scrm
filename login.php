@@ -1,18 +1,23 @@
 <?php
 session_start();
 error_reporting(0);
-include("dbconnection.php");
+include("dbconnection.php"); // PostgreSQL connection
 
 if (isset($_POST['login'])) {
-    $ret = mysqli_query($con, "SELECT * FROM user WHERE email='" . $_POST['email'] . "' and password='" . $_POST['password'] . "'");
-    $num = mysqli_fetch_array($ret);
-    if ($num > 0) {
-        $_SESSION['login'] = $_POST['email'];
+    $email = $_POST['email'];
+    $password = $_POST['password'];
+
+    // Use parameterized query to prevent SQL injection
+    $ret = pg_query_params($con, "SELECT * FROM \"user\" WHERE email=$1 AND password=$2", array($email, $password));
+    $num = pg_fetch_assoc($ret);
+
+    if ($num) {
+        $_SESSION['login'] = $email;
         $_SESSION['id'] = $num['id'];
         $_SESSION['name'] = $num['name'];
 
-        $val3 = date("Y/m/d");
         date_default_timezone_set("Africa/Nairobi");
+        $val3 = date("Y/m/d");
         $time = date("h:i:sa");
         $ip_address = $_SERVER['REMOTE_ADDR'];
 
@@ -21,8 +26,12 @@ if (isset($_POST['login'])) {
         $city = $addrDetailsArr['geoplugin_city'] ?? '';
         $country = $addrDetailsArr['geoplugin_countryName'] ?? '';
 
-        mysqli_query($con, "INSERT INTO usercheck(logindate,logintime,user_id,username,email,ip,city,country)
-        VALUES('$val3','$time','{$_SESSION['id']}','{$_SESSION['name']}','{$_SESSION['login']}','$ip_address','$city','$country')");
+        // Insert login info
+        pg_query_params($con, 
+            'INSERT INTO usercheck(logindate, logintime, user_id, username, email, ip, city, country)
+             VALUES($1,$2,$3,$4,$5,$6,$7,$8)', 
+            array($val3, $time, $_SESSION['id'], $_SESSION['name'], $_SESSION['login'], $ip_address, $city, $country)
+        );
 
         echo "<script>window.location.href='dashboard.php'</script>";
         exit();
@@ -44,86 +53,18 @@ if (isset($_POST['login'])) {
 <link href="https://fonts.googleapis.com/css?family=Catamaran:400,600,700|Lato:400,700&display=swap" rel="stylesheet">
 
 <style>
-body {
-  font-family: 'Lato', sans-serif;
-  background-color: #f4f4f4;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
-
-main {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.login-container {
-  background: #fff;
-  border-top: 5px solid #003366; /* ORPP navy blue */
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-  width: 100%;
-  max-width: 420px;
-  padding: 35px;
-}
-
-.login-container h2 {
-  color: #003366;
-  font-weight: 700;
-  text-align: center;
-  margin-bottom: 10px;
-}
-
-.login-container p {
-  text-align: center;
-  color: #555;
-}
-
-.form-control {
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  box-shadow: none;
-}
-
-.btn-primary {
-  background-color: #003366;
-  border: none;
-  font-weight: 600;
-  border-radius: 30px;
-  transition: all 0.3s;
-  color: #fff;
-}
-
-.btn-primary:hover {
-  background-color: #00224d;
-}
-
-.text-link {
-  color: #003366;
-  font-weight: 600;
-}
-
-.text-link:hover {
-  color: #FFD700;
-  text-decoration: underline;
-}
-
-.error-msg {
-  color: #d9534f;
-  text-align: center;
-  margin-bottom: 15px;
-}
-
-footer {
-  text-align: center;
-  color: #555;
-  font-size: 14px;
-  padding: 15px 0;
-  background-color: #fff;
-  border-top: 3px solid #003366;
-}
+body { font-family: 'Lato', sans-serif; background-color: #f4f4f4; min-height: 100vh; display: flex; flex-direction: column; }
+main { flex: 1; display: flex; align-items: center; justify-content: center; }
+.login-container { background: #fff; border-top: 5px solid #003366; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); width: 100%; max-width: 420px; padding: 35px; }
+.login-container h2 { color: #003366; font-weight: 700; text-align: center; margin-bottom: 10px; }
+.login-container p { text-align: center; color: #555; }
+.form-control { border-radius: 6px; border: 1px solid #ccc; box-shadow: none; }
+.btn-primary { background-color: #003366; border: none; font-weight: 600; border-radius: 30px; transition: all 0.3s; color: #fff; }
+.btn-primary:hover { background-color: #00224d; }
+.text-link { color: #003366; font-weight: 600; }
+.text-link:hover { color: #FFD700; text-decoration: underline; }
+.error-msg { color: #d9534f; text-align: center; margin-bottom: 15px; }
+footer { text-align: center; color: #555; font-size: 14px; padding: 15px 0; background-color: #fff; border-top: 3px solid #003366; }
 </style>
 </head>
 
